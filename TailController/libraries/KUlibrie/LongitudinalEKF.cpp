@@ -104,7 +104,7 @@ void LongitudinalEKF::update(float ax, float az, float q_raw, bool calibrating) 
         *_az_filt = az_filter.get_filtered() * _calibration(2, 0) + _calibration(2, 1);
         
         // !!!! Need to watch out _gyro_biasses if 1x3 => must be _gyro_biasses(2)!!
-        *_q_filt_val = (q_filter.get_filtered() - _gyro_biasses(1)) * d2r;
+        *_q_filt_val = (q_filter.get_filtered() - _gyro_biasses(2)) * d2r;
     }
 
     // 3. EKF Innovation (Measurement - Prediction)
