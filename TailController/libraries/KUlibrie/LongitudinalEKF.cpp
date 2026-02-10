@@ -93,34 +93,26 @@ void LongitudinalEKF::predict(float V_IO, float servo_angle, float dt) {
 // ----------------------------------------------------
 // Update Step (Calibrate -> Filter -> Correct Model)
 // ----------------------------------------------------
-void LongitudinalEKF::update(float ax, float az, float qz) {
+void LongitudinalEKF::update(float ax, float az, float gy, bool calibrating) {
     // Filter the accelerometer measurements
     ax_filter.update(ax);
     az_filter.update(az);
+    // Filter the gyroscope data
+    gy_filter.update(gy);
 
     // If the drone is calibrating, the raw filtered data should be used, otherwise, 
     // the measurements should be transformed using the calibration settings
     if (calibrating) {
         *_ax_filt = ax_filter.get_filtered();
         *_az_filt = az_filter.get_filtered();
+        *_gy_filt = gy_filter.get_filtered();
     } else {
         *_ax_filt = ax_filter.get_filtered()*_calibration(0, 0) + _calibration(0, 1);
         *_az_filt = az_filter.get_filtered()*_calibration(2, 0) + _calibration(2, 1);
-    }
-    // Filter the gyroscope data
-    gx_filter.update(gx);
-    gy_filter.update(gy);
-    gz_filter.update(gz);
-
-    // If the drone is calibrating, the raw filtered data should be used, otherwise, 
-    // the bias should be subtracted from the measurements
-    if (calibrating) {
-        *_gz_filt = gz_filter.get_filtered();
-    } else{
-        *_gz_filt = (gz_filter.get_filtered() - _gyro_biasses(2))*d2r;
+        // Note important that gyro_biasses(2) is still gy!!!
+        *_gy_filt = (gy_filter.get_filtered() - _gyro_biasses(2))*d2r;
     }
 
-    
 
     // 4. EKF Innovation (Measurement - Prediction)
     float u = *_u; 
