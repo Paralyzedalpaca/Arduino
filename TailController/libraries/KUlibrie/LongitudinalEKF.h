@@ -26,7 +26,8 @@ class LongitudinalEKF {
         // Calibration Routine (Blocking)
         void set_calibration(Matrix<5,2> calibration, Matrix<3> gyro_biasses); // made it a 5x2 for some reason?
         // Update step: Takes RAW sensor data, calibrates it, filters it, then fuses with model
-        void update(float ax, float az, float q);
+        // Added 'calibrating' flag to match logic in .cpp
+        void update(float ax, float az, float q, bool calibrating);
         
         // Prediction step: MODEL based
         // Voltage -> Force -> Velocity + tail angle -> pitch rate
@@ -40,9 +41,10 @@ class LongitudinalEKF {
         float *_theta = 0;  
 
         // Pointers to external low pass filtered measurement variables
-        float *_ax_filt = 0;
-        float *_az_filt = 0;
-        float *_q_filt_val = 0;
+        // is not made zero in og files
+        float *_ax_filt;
+        float *_az_filt;
+        float *_q_filt_val;
 
         // Calibration Biases
         float _ax_bias = 0;
@@ -60,7 +62,7 @@ class LongitudinalEKF {
         Matrix<4,4> P;                                  // Error covariance matrix      
         
         Matrix<4,4> A;                                  // Jacobian gyroscope     
-        Matrix<3,4> C:                                  // Jacobian accelerometer
+        Matrix<3,4> C;                                  // Jacobian accelerometer
         Matrix<4,3> K;                                  // Kalman gain           
         
         // Identity matrix
