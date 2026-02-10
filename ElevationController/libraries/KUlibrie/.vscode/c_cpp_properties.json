@@ -1,0 +1,32 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "C:\\Users\\helse\\AppData\\Local\\Arduino15\\packages\\Seeeduino\\hardware\\nrf52\\1.1.8\\variants\\Seeed_XIAO_nRF52840",
+                "${default}",
+                "${workspaceFolder}",
+                "C:\\Users\\helse\\AppData\\Local\\Arduino15\\packages\\Seeeduino\\hardware\\nrf52\\1.1.8\\libraries\\Adafruit_TinyUSB_Arduino\\src",
+                "C:\\Users\\helse\\Documents\\Arduino\\libraries\\**",
+                "${workspaceFolder}/include",
+                "C:/Users/helse/Documents/Arduino/libraries/BasicLinearAlgebra",
+                "C:\\Users\\helse\\AppData\\Local\\Arduino15\\packages\\Seeeduino\\hardware\\nrf52\\1.1.8\\libraries\\Bluefruit52Lib\\src",
+                "C:\\Users\\helse\\AppData\\Local\\Arduino15\\packages\\Seeeduino\\hardware\\nrf52\\1.1.8\\cores\\nRF5\\nordic\\softdevice\\s140_nrf52_7.3.0_API\\include",
+                "C:\\Users\\helse\\AppData\\Local\\Arduino15\\packages\\Seeeduino\\hardware\\nrf52\\1.1.8\\**",
+                "C:/Users/helse/Documents/Arduino/libraries/AutoPID",
+                "C:/Users/helse/AppData/Local/Arduino15/packages/Seeeduino/hardware/nrf52/1.1.8/cores/nRF5"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "windowsSdkVersion": "10.0.22621.0",
+            "compilerPath": "cl.exe",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "windows-msvc-x64"
+        }
+    ],
+    "version": 4
+}
