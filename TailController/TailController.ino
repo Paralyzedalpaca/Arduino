@@ -128,13 +128,27 @@ float pitch_reference = 70.0*deg_to_rad;
 
 // Variables to store the attitude estimation
 float roll, pitch, yaw_rate;
+// Variables for Longitudinal EKF States
+float u = 0;      // Forward Velocity (m/s)
+float w = 0;      // Vertical Velocity (m/s)
+float q_ekf = 0;  // Pitch Rate from EKF (rad/s)
+float theta = 0;  // Pitch Angle from EKF (rad)
+
 float previous_pitch=0;
 float pitch_error;
 float pitch_error_i=0;
 
 bool started = false;
 // KUlibrie object to control the hardware settings, bluetooth communication, ...
-KUlibrie kulibrie(&roll, &pitch, &yaw_rate, &VI0, &V0, &dV, &ds, &ref_roll, &pitch_reference, &ref_yaw_rate,&servo_angle_deg);
+KUlibrie kulibrie(&roll, &pitch, &yaw_rate,
+                &VI0, &V0, &dV, &ds, &ref_roll, 
+                &pitch_reference, &ref_yaw_rate,
+                &servo_angle_deg);
+KUlibrie kulibrie(&roll, &pitch, &yaw_rate, &u, &w, &q_ekf, &theta, // Added new pointers
+                  &VI0, &V0, &dV, &ds, 
+                  &ref_roll, &pitch_reference, &ref_yaw_rate, 
+                  &servo_angle_deg);
+
 
 // PID controllers
 AutoPID roll_control(&roll, &ref_roll, &dV, DV_MIN, DV_MAX, Kp_r, Ki_r, Kd_r);

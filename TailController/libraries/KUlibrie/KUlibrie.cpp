@@ -5,47 +5,30 @@ KUlibrie* KUlibrie::instance = nullptr;
 // -----------
 // Constructor
 // -----------
-KUlibrie::KUlibrie(float *roll, float *pitch, float *yaw_rate, float *VI0, float *V0, float *dV, float *ds, float *ref_roll, float *ref_pitch, float *ref_yaw_rate)
+KUlibrie::KUlibrie(float *u, float *w, float *q, float *theta, 
+                   float *VI0, float *servo_angle, 
+                   float *ref_pitch)
     :   imu(I2C_MODE, 0x6A),
         telemetryService("1101"), telemetryChar("2101"),
         controlService("1102"), controlChar("2102"),
         actionService("1103"), actionChar("2103"),
         referenceService("1104"), referenceChar("2104"),
-        filter(Q, R, f_acc, f_gyr, &ax_filt, &ay_filt, &az_filt, &gx_filt, &gy_filt, &gz_filt, roll, pitch, yaw_rate),
-        file(InternalFS) {
-            /*
-            This function creates a new instance of the KUlibrie class
-
-            Inputs:
-                - *roll         float           (Reference to) the estimated roll angle
-                - *pitch        float           (Reference to) the estimated pitch angle
-                - *yaw_rate     float           (Reference to) the estimated yaw rate
-                - *VI0          float           (Reference to) the thrust control action
-                - *V0           float           (Reference to) the pitch control action
-                - *dV           float           (Reference to) the roll control action
-                - *ds           float           (Reference to) the yaw control action
-                - *ref_roll     float           (Reference to) the reference roll angle
-                - *ref_pitch    float           (Reference to) the reference pitch angle
-                - *ref_yaw_rate float           (Reference to) the reference yaw rate
+ekf(Q, R, f_acc, f_gyr, 
+            u, w, q, theta, 
+            &ax_filt, &az_filt, &gy_filt, 
+            0, 0, 0),        
+            file(InternalFS) {
             
-            The function stores the references to the different variables to local variables within the class.
-            It also initiates the IMU sensor, the bluetooth characteristics and the attitude reconstruction filter.
-            Lastly it also accesses the file containing the calibration settings. 
-            */
             instance = this;
 
-            _roll = roll;
-            _pitch = pitch;
-            _yaw_rate = yaw_rate;
-
-            _ref_roll = ref_roll;
+            _u = u; _w = w; _q = q; _theta = theta;
+            _VI0 = VI0; 
+            _servo_angle = servo_angle;
             _ref_pitch = ref_pitch;
-            _ref_yaw_rate = ref_yaw_rate;
 
-            _VI0 = VI0;
-            _V0 = V0;
-            _dV = dV;
-            _ds = ds;
+            // Set legacy pointers to null to avoid crashes
+            _roll = nullptr; _pitch_legacy = nullptr; _yaw_rate = nullptr;
+            _ref_roll = nullptr; _ref_yaw_rate = nullptr;
         }
 
 
