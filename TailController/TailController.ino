@@ -2,7 +2,7 @@
 #include <AutoPID.h>
 #include <KUlibrie.h>
 #include <Servo.h> 
-#include <Filters.h> 
+#include <filters.h> 
 
 // ---------------------------------------------------
 // 1. Define Variables 
@@ -15,7 +15,7 @@ float q = 0;      // Pitch rate (rad/s) from EKF
 float theta = 0;  // Pitch angle (rad) from EKF
 
 // --- Controls ---
-float VI0 = 2.35;           // Main Voltage
+float VI0 = 0;           // Main Voltage
 float servo_angle_deg = 90; // Servo angle in degrees (Maintained by KUlibrie)
 float servo_angle_rad = 0;  // Helper for math
 
@@ -170,6 +170,10 @@ void loop() {
     
     // Debug
     // Serial.println(servo_angle_deg);
+    Serial.print("Pitch angle: "); // Prints the text without a new line
+    Serial.println(theta);         // Prints the value of 'theta' and starts a new line
+    Serial.print(" u: "); // Prints the text without a new line
+    Serial.println(u);         // Prints the value of 'theta' and starts a new line
 
   } 
   else if (kulibrie.calibrate) {
@@ -362,5 +366,3 @@ void calibrate() {
 
     kulibrie.calibrate = false;
 }
-
-

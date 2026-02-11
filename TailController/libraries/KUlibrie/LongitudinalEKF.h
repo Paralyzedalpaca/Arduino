@@ -2,7 +2,7 @@
 #define LONGITUDINAL_EKF_H
 
 #include <cmath>
-#include <Filters.h>            
+#include <filters.h>            
 #include <BasicLinearAlgebra.h> 
 
 using namespace BLA;
