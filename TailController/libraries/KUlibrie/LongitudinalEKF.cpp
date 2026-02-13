@@ -51,6 +51,14 @@ void LongitudinalEKF::set_calibration(Matrix<5,2> calibration, Matrix<3> gyro_bi
 // Prediction Step (Physics Model)
 // ------------------------------------------
 void LongitudinalEKF::predict(float V_IO, float servo_angle, float dt) {
+    // [DEBUG] Check Inputs and Constants
+    Serial.print("PREDICT dt: "); Serial.println(dt, 6);
+    Serial.print("PREDICT In State (u,w,q,th): ");
+    Serial.print(*_u); Serial.print(", ");
+    Serial.print(*_w); Serial.print(", ");
+    Serial.print(*_q); Serial.print(", ");
+    Serial.println(*_theta);
+    
     float u = *_u;
     float w = *_w;
     float q = *_q;
@@ -81,8 +89,16 @@ void LongitudinalEKF::predict(float V_IO, float servo_angle, float dt) {
     A(1,0) = Zu/mass + q;   A(1,1) = Zw/mass;       A(1,2) = Zq/mass + u;   A(1,3) = -g*sTh;
     A(2,0) = Mu/Iyy;        A(2,1) = Mw/Iyy;        A(2,2) = Mq/Iyy;        A(2,3) = 0;
     A(3,0) = 0;             A(3,1) = 0;             A(3,2) = 1;             A(3,3) = 0;
-
+    
     P += (A*P + P*~A + Q)*dt; 
+    // [DEBUG] Check P matrix after prediction
+    Serial.print("PREDICT P_diag: ");
+    Serial.print(P(0,0)); Serial.print(", ");
+    Serial.print(P(1,1)); Serial.print(", ");
+    Serial.print(P(2,2)); Serial.print(", ");
+    Serial.println(P(3,3));
+    
+    if (isnan(P(0,0))) Serial.println("ERROR: P became NaN in Predict step!");
 }
 
 // ----------------------------------------------------
@@ -127,7 +143,25 @@ void LongitudinalEKF::update(float ax, float az, float q_raw, bool calibrating) 
 
     // 5. Correction
     Matrix<3,3> S = C * P * (~C) + R;
-    K = P * (~C) * Inverse(S);
+
+    // [DEBUG] Check S before inversion
+    Serial.print("UPDATE S_diag: ");
+    Serial.print(S(0,0), 6); Serial.print(", ");
+    Serial.print(S(1,1), 6); Serial.print(", ");
+    Serial.println(S(2,2), 6);
+
+    // [DEBUG] Check R just to be absolutely sure
+    Serial.print("UPDATE R_diag: ");
+    Serial.print(R(0,0), 6); Serial.print(", ");
+    Serial.print(R(1,1), 6); Serial.print(", ");
+    Serial.println(R(2,2), 6);
+    
+    Matrix<3,3> S_inv = Inverse(S);
+    
+    // [DEBUG] Check Inversion result
+    Serial.print("UPDATE S_inv(0,0): "); Serial.println(S_inv(0,0));
+    
+    K = P * (~C) * S_inv; // Changed to use the pre-calculated S_inv for debugging
     
     Matrix<4> x_corr = K * y;
     *_u += x_corr(0);

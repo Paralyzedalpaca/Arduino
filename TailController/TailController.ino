@@ -148,8 +148,8 @@ void loop() {
 
     // 4. Update Filter (Runs the EKF)
     // This updates u, w, q, and theta based on IMU, VI0, and servo_angle
-    //kulibrie.update_filter(dt);
-
+    kulibrie.update_filter(dt);
+    
     // 5. Calculate Errors
     // Use 'theta' from EKF instead of old 'pitch'
     pitch_error = theta - pitch_reference;
